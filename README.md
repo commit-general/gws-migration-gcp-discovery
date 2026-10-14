@@ -72,7 +72,9 @@ accounts in IAM, contacts and audit logs.
 
 ## Roles
 
-Run it as a person (`gcloud auth login`), not as a service account. A service
+Ask for these roles before the run: in some companies granting them needs
+a change approval. Run it as a person (`gcloud auth login`), not as a service
+account. A service
 account bills API calls to its own project, so any read whose API is off there
 comes back as a gap.
 
@@ -110,7 +112,8 @@ An organization admin usually has most of these through
 - Without a quota project, calls count against per-minute quotas per user
   (deny policies: 10 reads a minute, about 2 minutes for 20 projects). Reads
   run in parallel and slow down to fit those quotas, so large organizations
-  take longer. Most runs take 3 to 10 minutes, most of it the audit logs.
+  take longer. A run takes about 10 minutes, longer in organizations with
+  hundreds of projects; most of it is the audit logs.
 
 ## Development
 

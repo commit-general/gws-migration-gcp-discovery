@@ -1,6 +1,6 @@
 # Google Cloud discovery
 
-<walkthrough-tutorial-duration duration="20"></walkthrough-tutorial-duration>
+<walkthrough-tutorial-duration duration="15"></walkthrough-tutorial-duration>
 
 ## Before you start
 
@@ -14,9 +14,14 @@ breaks.
   explained when it comes up, and you can say no.
 - It writes one zip file, which you download and upload in the form.
 
-You need an account that can view your whole organization, for example an
-organization admin. The script tells you if a part can't be read, and which
-role would fix it.
+You need read-only roles on the organization. The list is in the
+[Roles section of the README](https://github.com/commit-general/gws-migration-gcp-discovery#roles). If granting roles in your company
+needs a change approval, request them before you start. The script checks your
+access first and tells you if a part can't be read, and which role would fix
+it.
+
+The script takes about 10 minutes, longer in organizations with hundreds of
+projects.
 
 Click **Start**.
 
@@ -53,7 +58,8 @@ Billing Budget API is on. If none of your projects has it on, the script asks
 whether to turn it on in one project you pick. It's free, and changes only that
 project. Type **NO** to skip budgets.
 
-Reading the audit logs is the slow part. Most runs take 5 to 10 minutes.
+Reading the audit logs is the slow part. The whole run takes about 10
+minutes, longer in organizations with hundreds of projects.
 
 ## Download the zip
 
