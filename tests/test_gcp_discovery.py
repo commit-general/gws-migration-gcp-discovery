@@ -294,6 +294,7 @@ class SummaryTest(unittest.TestCase):
         groups["access-paths"].data = {"compute": [
             {**vm, "projectId": "net-host", "sharedVpc": "HOST", "sharedVpcServiceProjects": ["app-1", "app-2"]},
             {**vm, "projectId": "net-host-2", "sharedVpc": "HOST", "sharedVpcServiceProjects": []},
+            {**vm, "projectId": "net-host-3", "sharedVpc": "HOST", "sharedVpcServiceProjects": ["app-3"]},
             {**vm, "projectId": "app-1", "sharedVpc": None},
         ]}
         groups["access-paths"].not_collected.append({"what": "Shared VPC service projects", "where": "net-host-2", "why": "x"})
@@ -303,8 +304,8 @@ class SummaryTest(unittest.TestCase):
         unread = gd.summary_text({"name": "organizations/1", "displayName": "x"}, groups, out)
         out.log_file.close()
         tmp.cleanup()
-        self.assertIn("Shared VPC host projects: net-host (2 service projects), net-host-2 (service projects not read).", text)
-        self.assertIn("Shared VPC host projects: none found (1 project not read: p).", unread)
+        self.assertIn("Shared VPC host projects: net-host (2 service projects), net-host-2 (service projects not read), net-host-3 (1 service project).", text)
+        self.assertIn("Shared VPC host projects: none found; 1 project not read: p.", unread)
 
 class NeverEnableTest(unittest.TestCase):
     def test_compute_sql_gke_are_refused(self):

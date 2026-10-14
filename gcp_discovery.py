@@ -1047,6 +1047,10 @@ def enable_api(run: Run, api: Api, project: str, service: str) -> bool:
 # ────────────────────────────────── Packaging ──────────────────────────────────
 
 
+def plural(n: int, noun: str) -> str:
+    return f"{n} {noun}{'' if n == 1 else 's'}"
+
+
 def summary_text(org: dict, groups: dict[str, Group], run: Run) -> str:
     h, iam, ap = groups["hierarchy"].data, groups["iam"].data, groups["access-paths"].data
     gr, mb, nt, ac = groups["guardrails"].data, groups["move-blockers"].data, groups["notifications"].data, groups["activity"].data
@@ -1070,12 +1074,12 @@ def summary_text(org: dict, groups: dict[str, Group], run: Run) -> str:
     ap_gaps = groups["access-paths"].not_collected
     unread_service_projects = {n["where"] for n in ap_gaps if n["what"] == "Shared VPC service projects"}
     vpc_hosts = [c["projectId"] + (" (service projects not read)" if c["projectId"] in unread_service_projects
-                                   else f" ({len(c.get('sharedVpcServiceProjects', []))} service projects)")
+                                   else f" ({plural(len(c.get('sharedVpcServiceProjects', [])), 'service project')})")
                  for c in ap.get("compute", []) if c.get("sharedVpc") == "HOST"]
     unread_compute = sorted({n["where"] for n in ap_gaps if n["what"] == "Compute project settings"})
     vpc_text = ", ".join(vpc_hosts) or "none found"
     if unread_compute:
-        vpc_text += f" ({len(unread_compute)} project{'s' if len(unread_compute) > 1 else ''} not read: {', '.join(unread_compute)})"
+        vpc_text += f"; {plural(len(unread_compute), 'project')} not read: {', '.join(unread_compute)}"
     act = ac.get("principals", [])
     not_collected = sum(len(g.not_collected) for g in groups.values())
 
@@ -1119,7 +1123,7 @@ def summary_text(org: dict, groups: dict[str, Group], run: Run) -> str:
         f"Budgets: {'not read' if nt.get('budgets') is None else read(len(nt['budgets']), 'notifications', 'budgets')}.",
         f"Active in the last {ac.get('days')} days: "
         f"{read(sum(1 for p in act if p['type'] == 'user'), 'activity', 'activity audit logs', 'data_access audit logs')} people; "
-        f"{sum(1 for p in act if p['type'] == 'serviceAccount')} service accounts people acted through"
+        f"{plural(sum(1 for p in act if p['type'] == 'serviceAccount'), 'service account')} people acted through"
         + (" (the time limit cut some of the logs short)" if ac.get("truncated") else "") + ".",
         "",
         f"Reads not collected: {not_collected}" + (" (listed in manifest.json)" if not_collected else "") + ".",
