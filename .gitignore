@@ -1,0 +1,4 @@
+# Output of a run: never commit it, it holds a customer's data.
+gcp-discovery-*/
+gcp-discovery-*.zip
+__pycache__/
